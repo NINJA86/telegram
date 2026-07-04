@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REGISTER</title>
+  </head>
+  <body>
+    <form id="authForm">
+      <input type="text" name="name" placeholder="نام" />
+      <input type="text" name="phone" placeholder="شماره تلفن" />
+      <input type="password" name="password" placeholder="رمز عبور" />
+
+      <button type="submit" name="action">register</button>
+    </form>
+
+    <script>
+      async function register(userParsedData) {
+        try {
+          const res = await fetch('http://localhost:4003/api/users/register', {
+            headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(userParsedData),
+          });
+
+          const result = await res.json();
+
+          if (!res.ok) {
+            console.error(result.message);
+            alert(result.message || 'خطا در ثبت‌نام');
+            return;
+          }
+
+          console.log(result);
+          window.location.href = 'http://localhost:4003/index.html';
+        } catch (error) {
+          console.error('خطای شبکه:', error);
+        }
+      }
+
+      document
+        .getElementById('authForm')
+        .addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const userData = new FormData(e.target);
+          const userParsedData = Object.fromEntries(userData);
+
+          register(userParsedData); // ← اینجا پاس بده
+        });
+    </script>
+  </body>
+</html>

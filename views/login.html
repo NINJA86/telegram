@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LOGIN</title>
+  </head>
+  <body>
+    <form id="authForm">
+      <input type="text" name="phone" placeholder="شماره تلفن" />
+      <input type="password" name="password" placeholder="رمز عبور" />
+
+      <button type="submit" name="action">login</button>
+    </form>
+
+    <script>
+      async function login(userParsedData) {
+        try {
+          const res = await fetch('http://localhost:4003/api/users/login', {
+            headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(userParsedData),
+          });
+
+          const result = await res.json();
+
+          if (!res.ok) {
+            console.error(result.message);
+            alert(result.message || 'خطا در ورود');
+            return;
+          }
+
+          console.log(result);
+          window.location.href = 'http://localhost:4003/index.html';
+        } catch (error) {
+          console.error('خطای شبکه:', error);
+        }
+      }
+
+      document
+        .getElementById('authForm')
+        .addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const userData = new FormData(e.target);
+          const userParsedData = Object.fromEntries(userData);
+
+          login(userParsedData); // ← اینجا پاس بده
+        });
+    </script>
+  </body>
+</html>
